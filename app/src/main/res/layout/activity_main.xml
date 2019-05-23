@@ -28,14 +28,14 @@
                     android:layout_width="160dp"
                     android:layout_height="wrap_content" android:id="@+id/readText"
                     android:layout_margin="8dp"
-            />
+                    android:onClick="onClickText"/>
 
             <Button
                     android:text="Faces"
                     android:layout_width="160dp"
                     android:layout_height="wrap_content" android:id="@+id/detectFace"
                     android:layout_margin="8dp"
-            />
+                    android:onClick="onClickFaces"/>
 
             <Button
                     android:text="Classificar"
