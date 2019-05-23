@@ -11,7 +11,7 @@
             android:theme="@style/AppTheme">
         <meta-data
                 android:name="com.google.firebase.ml.vision.DEPENDENCIES"
-                android:value="ocr,face" />
+                android:value="ocr,face,label" />
 
         <activity android:name=".MainActivity">
             <intent-filter>

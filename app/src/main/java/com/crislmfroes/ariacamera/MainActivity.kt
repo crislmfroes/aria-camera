@@ -1,19 +1,14 @@
 package com.crislmfroes.ariacamera
 
-import android.content.Context
-import android.hardware.camera2.CameraManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.util.SparseIntArray
-import android.view.Surface
 import android.view.View
 import android.widget.TextView
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
 import com.google.firebase.ml.vision.face.FirebaseVisionFace
-import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions
 import io.fotoapparat.Fotoapparat
 import io.fotoapparat.configuration.CameraConfiguration
@@ -98,6 +93,25 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    fun labelImage(frame : Frame) {
+        val metadata = FirebaseVisionImageMetadata.Builder()
+            .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
+            .setRotation(FirebaseVisionImageMetadata.ROTATION_0)
+            .setWidth(frame.size.width)
+            .setHeight(frame.size.height)
+            .build()
+        val fireImage = FirebaseVisionImage.fromByteArray(frame.image, metadata)
+        val labeler = FirebaseVision.getInstance().onDeviceImageLabeler
+        val result = labeler.processImage(fireImage)
+            .addOnSuccessListener {
+                val labels = it
+                textView!!.text = labels[0].text
+            }
+            .addOnFailureListener {
+                Log.e("Error", "Error on labelImage", it)
+            }
+    }
+
     fun onClickText(v : View) {
         val config = CameraConfiguration(
             frameProcessor = {
@@ -111,6 +125,15 @@ class MainActivity : AppCompatActivity() {
         val config = CameraConfiguration(
             frameProcessor = {
                 detectFaces(it)
+            }
+        )
+        apparat!!.updateConfiguration(config)
+    }
+
+    fun onClickLabel(v : View) {
+        val config = CameraConfiguration(
+            frameProcessor = {
+                labelImage(it)
             }
         )
         apparat!!.updateConfiguration(config)
