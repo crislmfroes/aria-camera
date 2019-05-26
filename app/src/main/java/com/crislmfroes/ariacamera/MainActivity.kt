@@ -21,6 +21,8 @@ class MainActivity : AppCompatActivity() {
 
     private var textView : TextView? = null
 
+    private var canProcess = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -43,6 +45,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun readText(frame : Frame) {
+        canProcess = false
         val metadata = FirebaseVisionImageMetadata.Builder()
             .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
             .setRotation(FirebaseVisionImageMetadata.ROTATION_0)
@@ -56,13 +59,16 @@ class MainActivity : AppCompatActivity() {
                 val resultText = it.text
                 Log.d("Detected text", resultText)
                 textView!!.text = resultText
+                canProcess = true
             }
             .addOnFailureListener {
                 Log.e("Error", "Error on readText", it)
+                canProcess = true
             }
     }
 
     private fun detectFaces(frame : Frame) {
+        canProcess = false
         val metadata = FirebaseVisionImageMetadata.Builder()
             .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
             .setRotation(FirebaseVisionImageMetadata.ROTATION_0)
@@ -86,14 +92,17 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                textView!!.text = "%i rostos na camera, %i estão sorrindo.".format(faceCount, smileCount)
+                textView!!.text = "%d rostos na camera, %d estão sorrindo.".format(faceCount, smileCount)
+                canProcess = true
             }
             .addOnFailureListener {
                 Log.e("Error", "Error on detectFaces", it)
+                canProcess = true
             }
     }
 
-    fun labelImage(frame : Frame) {
+    private fun labelImage(frame : Frame) {
+        canProcess = false
         val metadata = FirebaseVisionImageMetadata.Builder()
             .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
             .setRotation(FirebaseVisionImageMetadata.ROTATION_0)
@@ -106,16 +115,20 @@ class MainActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 val labels = it
                 textView!!.text = labels[0].text
+                canProcess = true
             }
             .addOnFailureListener {
                 Log.e("Error", "Error on labelImage", it)
+                canProcess = true
             }
     }
 
     fun onClickText(v : View) {
         val config = CameraConfiguration(
             frameProcessor = {
-                readText(it)
+                if (canProcess) {
+                    readText(it)
+                }
             }
         )
         apparat!!.updateConfiguration(config)
@@ -124,7 +137,9 @@ class MainActivity : AppCompatActivity() {
     fun onClickFaces(v : View) {
         val config = CameraConfiguration(
             frameProcessor = {
-                detectFaces(it)
+                if (canProcess) {
+                    detectFaces(it)
+                }
             }
         )
         apparat!!.updateConfiguration(config)
@@ -133,7 +148,9 @@ class MainActivity : AppCompatActivity() {
     fun onClickLabel(v : View) {
         val config = CameraConfiguration(
             frameProcessor = {
-                labelImage(it)
+                if (canProcess) {
+                    labelImage(it)
+                }
             }
         )
         apparat!!.updateConfiguration(config)
