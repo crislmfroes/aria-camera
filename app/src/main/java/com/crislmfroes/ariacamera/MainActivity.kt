@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         canProcess = false
         val metadata = FirebaseVisionImageMetadata.Builder()
             .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
-            .setRotation(FirebaseVisionImageMetadata.ROTATION_0)
+            .setRotation(FirebaseVisionImageMetadata.ROTATION_90)
             .setWidth(frame.size.width)
             .setHeight(frame.size.height)
             .build()
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         canProcess = false
         val metadata = FirebaseVisionImageMetadata.Builder()
             .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
-            .setRotation(FirebaseVisionImageMetadata.ROTATION_0)
+            .setRotation(FirebaseVisionImageMetadata.ROTATION_90)
             .setWidth(frame.size.width)
             .setHeight(frame.size.height)
             .build()
@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         canProcess = false
         val metadata = FirebaseVisionImageMetadata.Builder()
             .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
-            .setRotation(FirebaseVisionImageMetadata.ROTATION_0)
+            .setRotation(FirebaseVisionImageMetadata.ROTATION_90)
             .setWidth(frame.size.width)
             .setHeight(frame.size.height)
             .build()
